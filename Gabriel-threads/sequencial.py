@@ -21,8 +21,10 @@
     vetor que representa o tabuleiro [2, 0, 3, 1]
 
 """
+import time
 
-def safe_position(board, row, col, number_of_queens):
+
+def is_position_valid(board, row, col, number_of_queens):
     # Check row on left side
     for i in range(col):
         if board[row][i] == 1:
@@ -53,7 +55,7 @@ def resolve_backtrack(board, col, number_of_queens, solutions):
 
     # tenta colocar uma rainha nas linhas da coluna
     for i in range(number_of_queens):
-        if safe_position(board, i, col, number_of_queens):
+        if is_position_valid(board, i, col, number_of_queens):
             # coloca a rainha
             board[i][col] = 1
             # faz o 'backtracking' para colocar o resto das rainhas
@@ -62,10 +64,14 @@ def resolve_backtrack(board, col, number_of_queens, solutions):
             board[i][col] = 0
 
 
-def resolve_n_queens(number_of_queens):
+def initialize_board(number_of_queens):
+    # inicializa tabuleiro com zeros
+    # inicializar com um caracter como '.' ou '*' aumenta o tempo.
+    return [[0] * number_of_queens for _ in range(number_of_queens)]
 
-    # inicializa com zeros
-    board = [[0 for _ in range(number_of_queens)] for _ in range(number_of_queens)]
+
+def resolve_n_queens(number_of_queens):
+    board = initialize_board(number_of_queens)
     solutions = []
 
     # começa a resolver a partir da primeira coluna
@@ -73,22 +79,37 @@ def resolve_n_queens(number_of_queens):
     return solutions
 
 
-number_of_queens = 6
-# condicionando de acordo com o número de rainhas
-if number_of_queens >= 4:
-    all_solutions = resolve_n_queens(number_of_queens)
-    total_solutions = len(all_solutions)
+"""
+    Para N igual a 1, temos apenas 1 solução
+    Para N igual a 2 e 3, não existe solução
+    
+    Se verificado valores de N menores que 4, o tempo
+    de execução aumenta ligeiramente
+    
+    A execução usando perf_counter(), process_time() and time()
+    possuem resultados semalhantes.
+"""
 
-    print(f"Número de soluções para {number_of_queens}-Queens: {total_solutions}")
+number_of_queens = [4, 5, 6, 7, 8, 9, 10, 11, 12]
+# condicionando de acordo com o número da lista de rainhas
+for queens in number_of_queens:
+    if queens >= 4:
+        time_start = time.perf_counter()
 
-    # se for maior que 10 soluções 'solutions' será 10
-    solutions = min(total_solutions, 10)
+        all_solutions = resolve_n_queens(queens)
+        total_solutions = len(all_solutions)
 
-    for i, solution in enumerate(all_solutions[:solutions], 1):
-        print(f"Solução {i}: {solution}")
-elif number_of_queens == 2 or number_of_queens == 3:
-    print(f"Número de rainhas não possui soluções")
-else:
-    print(f"Número de rainhas possui apenas 1 solução")
+        end_time = time.perf_counter()
+        exec_time = end_time - time_start
+
+        print(f"Número de soluções para {queens}-Queens: {total_solutions}\n")
+        print(f"Tempo de execução: {exec_time:.5f}s\n")
+
+        # se for maior que 10 soluções 'solutions' será 10
+        solutions = min(total_solutions, 10)
+
+        for i, solution in enumerate(all_solutions[:solutions], 1):
+            print(f"Solução {i}: {solution}")
+        print("\n")
 
 
