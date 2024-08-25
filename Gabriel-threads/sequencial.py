@@ -20,96 +20,136 @@
 
     vetor que representa o tabuleiro [2, 0, 3, 1]
 
+    O problema pode ser resolvido pela pela propriedade das diagonais:
+
+    A soma das coordenadas da diagonal da esquerda para a direita sempre são iguais a soma das coordenadas da rainha
+
+    A soma das coordenadas da diagonal da direita para a esquerda sempre são iguai a subtração das coordenadas da rainha
+
+    Ex: Diagonal esquerda para a direita
+
+        -----------------
+    0   |   |   |   |   |
+    1   |   |   | X |   |   =>> Rainha (2,1) = 2 + 1 = 3
+    2   |   | Q |   |   |       Diagonal superior direita => (1,2) = 1 + 2 = 3
+    3   | X |   |   |   |       Diagonal inferior esquerda => (3,0) = 3 + 0 = 3
+        -----------------
+          0   1   2   3
+
+        -----------------
+    0   |   |   |   |   |
+    1   | X |   |   |   |   =>> Rainha (2,1) = 2 - 1 = 1
+    2   |   | Q |   |   |       Diagonal superior esquerda => (1,0) = 1 - 0 = 1
+    3   |   |   | X |   |       Diagonal inferior direita => (3,2) = 3 - 2 = 1
+        -----------------
+          0   1   2   3
 """
 import time
 
 
-def is_position_valid(board, row, col, number_of_queens):
-    # Check row on left side
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
+def solve_n_queens(n):
 
-    # Check upper diagonal on left side
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
+    """
+        Cada índice representa uma linha, o valor representa a coluna da rainha
+        Rainha na coluna 2 e linha 0 -> board[0] = 2
+        Ex: n = 4 -> board = [ * , * , * , *]
+    """
 
-    # Check lower diagonal on left side
-    for i, j in zip(range(row, number_of_queens, 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
+    board = ['*'] * n
 
-    return True
+    """
+        columns = [] -> Lista de colunas ocupadas
+        
+        positive_diagonals = []  -> Lista de diagonais positivas ocupadas (linha + coluna)
+        
+        negative_diagonals = []  -> Conjunto de diagonais negativas ocupadas (linha - coluna)
+        
+        solutions = []  -> Lista para armazenar todas as soluções
+    """
 
-
-def resolve_backtrack(board, col, number_of_queens, solutions):
-    if col == number_of_queens:
-        solution = []
-        for i in range(number_of_queens):
-            for j in range(number_of_queens):
-                if board[i][j] == 1:
-                    solution.append(j)
-        solutions.append(solution)
-        return
-
-    # tenta colocar uma rainha nas linhas da coluna
-    for i in range(number_of_queens):
-        if is_position_valid(board, i, col, number_of_queens):
-            # coloca a rainha
-            board[i][col] = 1
-            # faz o 'backtracking' para colocar o resto das rainhas
-            resolve_backtrack(board, col + 1, number_of_queens, solutions)
-            # no 'backtrack' remove a rainha para tentar outras posições
-            board[i][col] = 0
-
-
-def initialize_board(number_of_queens):
-    # inicializa tabuleiro com zeros
-    # inicializar com um caracter como '.' ou '*' aumenta o tempo.
-    return [[0] * number_of_queens for _ in range(number_of_queens)]
-
-
-def resolve_n_queens(number_of_queens):
-    board = initialize_board(number_of_queens)
+    columns = []
+    positive_diagonals = []
+    negative_diagonals = []
     solutions = []
 
-    # começa a resolver a partir da primeira coluna
-    resolve_backtrack(board, 0, number_of_queens, solutions)
+    # Uma posição é segura se sua coluna e diagonais não estão ocupadas
+    def valid_position(row, col):
+        return col not in columns and row + col not in positive_diagonals and row - col not in negative_diagonals
+
+    def place_queen(row):
+        # Verifica se todas as rainhas foram posicionadas
+        if row == n:
+            # Se sim, adiciona a solução atual à lista de soluções
+            solutions.append(board[:])
+            return
+        # Tenta colocar uma rainha em cada coluna da linha atual
+        for col in range(n):
+            # Verifica se a posição atual é segura
+            if valid_position(row, col):
+                # Posiciona a rainha
+                board[row] = col
+
+                # Marca a coluna e as diagonais como ocupadas
+                columns.append(col)
+
+                # Marca a diagonal positiva como ocupada
+                positive_diagonals.append(row + col)
+
+                # Marca a diagonal negativa como ocupada
+                negative_diagonals.append(row - col)
+
+                # Move para a próxima linha
+                place_queen(row + 1)
+
+                # Remove a marcação da coluna
+                columns.pop()
+
+                # Remove a marcação da diagonal positiva
+                positive_diagonals.pop()
+
+                # Remove a marcação da diagonal negativa
+                negative_diagonals.pop()
+
+    # Inicia o processo recursivo a partir da primeira linha
+    place_queen(0)
     return solutions
 
 
-"""
-    Para N igual a 1, temos apenas 1 solução
-    Para N igual a 2 e 3, não existe solução
-    
-    Se verificado valores de N menores que 4, o tempo
-    de execução aumenta ligeiramente
-    
-    A execução usando perf_counter(), process_time() and time()
-    possuem resultados semalhantes.
-"""
-
+# Lista de tamanhos de tabuleiro para resolver
 number_of_queens = [4, 5, 6, 7, 8, 9, 10, 11, 12]
-# condicionando de acordo com o número da lista de rainhas
-for queens in number_of_queens:
-    if queens >= 4:
-        time_start = time.perf_counter()
 
-        all_solutions = resolve_n_queens(queens)
-        total_solutions = len(all_solutions)
+# Resolve para cada tamanho de tabuleiro
+for n in number_of_queens:
+    print(f"\nResolvendo {n}-Rainhas:")
 
-        end_time = time.perf_counter()
-        exec_time = end_time - time_start
+    """
+        start_time -> inicia a contagem do tempo
+        
+        all_solution -> chama a função principal
+        
+        end_time -> finaliza a contagem do tempo a contagem do tempo
+        
+        *Obs: Foi optado por utilizar perf_counter pois é mais indicado para benchmarks
+        porém não foi observado grandes diferenças entre outros métodos de medição de tempo
+        de execução como o time() e o process_time()
+    """
 
-        print(f"Número de soluções para {queens}-Queens: {total_solutions}\n")
-        print(f"Tempo de execução: {exec_time:.5f}s\n")
+    start_time = time.perf_counter()
+    all_solutions = solve_n_queens(n)
+    end_time = time.perf_counter()
 
-        # se for maior que 10 soluções 'solutions' será 10
-        solutions = min(total_solutions, 10)
+    # Receve o tamanho da lista de soluções
+    total_solutions = len(all_solutions)
 
-        for i, solution in enumerate(all_solutions[:solutions], 1):
-            print(f"Solução {i}: {solution}")
-        print("\n")
+    # Intevalo de tempo entre o início do registro e final
+    exec_time = end_time - start_time
 
+    print(f"Número de soluções: {total_solutions}")
+    print(f"Tempo de execução: {exec_time:.5f} segundos")
 
+    # Imprime até 10 soluções, se o total de soluções for maior que 10
+    solutions_to_print = min(total_solutions, 10)
+
+    # Imprime a solução
+    for i, solution in enumerate(all_solutions[:solutions_to_print], 1):
+        print(f"Solução {i}: {solution}")
