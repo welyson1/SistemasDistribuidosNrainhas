@@ -108,7 +108,7 @@ def plotar_solucoes_lado_a_lado(sol_sequencial, sol_paralelo, tempo_seq, tempo_p
     plt.show()
 
 # Testar e comparar soluções sequenciais e paralelas
-n = 10  # Exemplo com N=8, pode ser ajustado para outros valores
+n = 10  # Exemplo com N=10, pode ser ajustado para outros valores
 tempos_sequenciais = []
 tempos_paralelos = []
 
@@ -127,7 +127,7 @@ tempos_paralelos.append(tempo_par)
 assert len(solucoes_seq) == len(solucoes_par), f"Divergência nas soluções para N={n}"
 
 # Exibir soluções e tempos de execução lado a lado
-print("Exemplo de Soluções para N=8:")
+print("Exemplo de Soluções para N=10:")
 print(f"Soluções Sequencial: {len(solucoes_seq)} em {tempo_seq:.4f}s")
 print(f"Soluções Paralelo: {len(solucoes_par)} em {tempo_par:.4f}s")
 
