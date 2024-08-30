@@ -2,6 +2,7 @@ import time
 import threading
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 # Função auxiliar para verificar se uma posição é segura
 def posicao_segura(tabuleiro, linha, coluna):
@@ -71,7 +72,6 @@ def n_rainhas_paralelo(n):
 
     return solucoes
 
-# Função para plotar um tabuleiro de damas realista
 def plotar_tabuleiro_realista(ax, tabuleiro, title):
     n = len(tabuleiro)
     # Criação do tabuleiro de xadrez
@@ -93,72 +93,50 @@ def plotar_tabuleiro_realista(ax, tabuleiro, title):
     ax.set_yticks([])
     ax.set_title(title)
 
-# Função para plotar as soluções lado a lado
-def plotar_solucoes_lado_a_lado(sol_sequencial, sol_paralelo, tempo_seq, tempo_par):
-    n = len(sol_sequencial)
-    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-
-    # Converter a solução para um tabuleiro 2D de inteiros
-    tabuleiro_seq = [[1 if c == 'Q' else 0 for c in linha] for linha in sol_sequencial]
-    tabuleiro_par = [[1 if c == 'Q' else 0 for c in linha] for linha in sol_paralelo]
-
-    plotar_tabuleiro_realista(axs[0], tabuleiro_seq, f'Sequencial (Tempo: {tempo_seq:.4f}s)')
-    plotar_tabuleiro_realista(axs[1], tabuleiro_par, f'Paralelo (Tempo: {tempo_par:.4f}s)')
-
-    plt.show()
+def salvar_solucoes_lado_a_lado(solucoes_seq, solucoes_par, tempo_seq, tempo_par, pasta):
+    if not os.path.exists(pasta):
+        os.makedirs(pasta)
+    
+    n = len(solucoes_seq[0])
+    num_solucoes = min(len(solucoes_seq), len(solucoes_par))
+    
+    for i in range(num_solucoes):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+        
+        tabuleiro_seq = [[1 if c == 'Q' else 0 for c in linha] for linha in solucoes_seq[i]]
+        tabuleiro_par = [[1 if c == 'Q' else 0 for c in linha] for linha in solucoes_par[i]]
+        
+        plotar_tabuleiro_realista(ax1, tabuleiro_seq, f"Sequencial (Tempo: {tempo_seq:.4f}s)")
+        plotar_tabuleiro_realista(ax2, tabuleiro_par, f"Paralelo (Tempo: {tempo_par:.4f}s)")
+        
+        plt.suptitle(f"Solução {i+1} para N-Rainhas (N={n})")
+        
+        filename = os.path.join(pasta, f"solucao_{i+1}.png")
+        plt.savefig(filename)
+        plt.close(fig)
 
 # Testar e comparar soluções sequenciais e paralelas
-n = 12  # Exemplo com N=10, pode ser ajustado para outros valores
-tempos_sequenciais = []
-tempos_paralelos = []
+n = 8  # Exemplo com N=8, pode ser ajustado para outros valores
 
-# Executar teste para um único valor de N e medir tempos de execução
+# Executar soluções sequenciais e paralelas
 start_time = time.time()
 solucoes_seq = n_rainhas_sequencial(n)
 tempo_seq = time.time() - start_time
-tempos_sequenciais.append(tempo_seq)
 
 start_time = time.time()
 solucoes_par = n_rainhas_paralelo(n)
 tempo_par = time.time() - start_time
-tempos_paralelos.append(tempo_par)
 
 # Verificar a correção
 assert len(solucoes_seq) == len(solucoes_par), f"Divergência nas soluções para N={n}"
 
-# Exibir soluções e tempos de execução lado a lado
-print("Exemplo de Soluções para N=10:")
-print(f"Soluções Sequencial: {len(solucoes_seq)} em {tempo_seq:.4f}s")
-print(f"Soluções Paralelo: {len(solucoes_par)} em {tempo_par:.4f}s")
+# Exibir informações sobre as soluções
+print(f"Soluções para N={n}:")
+print(f"Sequencial: {len(solucoes_seq)} soluções em {tempo_seq:.4f}s")
+print(f"Paralelo: {len(solucoes_par)} soluções em {tempo_par:.4f}s")
 
-# Plotar as primeiras soluções para visualização lado a lado
-plotar_solucoes_lado_a_lado(solucoes_seq[0], solucoes_par[0], tempo_seq, tempo_par)
+# Salvar todas as soluções como imagens lado a lado
+pasta_solucoes = "solucoes_n_rainhas_lado_a_lado"
+salvar_solucoes_lado_a_lado(solucoes_seq, solucoes_par, tempo_seq, tempo_par, pasta_solucoes)
 
-# Exibir gráficos de tempo de execução para diferentes valores de N
-n_values = [4, 5, 6, 7, 8, 9, 10]
-tempos_sequenciais = []
-tempos_paralelos = []
-
-for n in n_values:
-    start_time = time.time()
-    solucoes_seq = n_rainhas_sequencial(n)
-    tempo_seq = time.time() - start_time
-    tempos_sequenciais.append(tempo_seq)
-
-    start_time = time.time()
-    solucoes_par = n_rainhas_paralelo(n)
-    tempo_par = time.time() - start_time
-    tempos_paralelos.append(tempo_par)
-
-    # Verificar a correção
-    assert len(solucoes_seq) == len(solucoes_par), f"Divergência nas soluções para N={n}"
-
-# Plotar o resultado de tempo de execução
-plt.plot(n_values, tempos_sequenciais, label='Sequencial', marker='o')
-plt.plot(n_values, tempos_paralelos, label='Paralelo', marker='o')
-plt.xlabel('N (Número de Rainhas)')
-plt.ylabel('Tempo de Execução (segundos)')
-plt.title('Tempo de Execução: N-Rainhas Sequencial vs Paralelo')
-plt.legend()
-plt.grid(True)
-plt.show()
+print(f"Todas as soluções foram salvas como imagens na pasta '{pasta_solucoes}'.")

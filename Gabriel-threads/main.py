@@ -16,7 +16,7 @@ import paralelo
 
 
 def main():
-    number_of_queens = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    number_of_queens = [4, 5, 6, 7, 8, 9, 10]
 
     for n in number_of_queens:
 
