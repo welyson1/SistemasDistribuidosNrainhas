@@ -1,3 +1,5 @@
+# sequential.py
+
 from nqueens.solver import NQueensSolver
 from typing import List, Tuple
 
