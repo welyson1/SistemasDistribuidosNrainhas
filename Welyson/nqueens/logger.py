@@ -6,7 +6,7 @@ from datetime import datetime
 
 class NQueensLogger:
     def __init__(self):
-        self.log_dir = "logs"
+        self.log_dir = "./Welyson/logs"
         os.makedirs(self.log_dir, exist_ok=True)
         self.log_file = os.path.join(self.log_dir, f"nqueens_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         logging.basicConfig(filename=self.log_file, level=logging.INFO, format='%(message)s')
