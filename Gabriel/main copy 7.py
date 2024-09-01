@@ -4,16 +4,19 @@ import matplotlib.pyplot as plt
 import platform
 import os
 import multiprocessing
+import numpy as np
+
 
 def main():
     # Lista de tamanhos de tabuleiro a serem testados
-    n_values = [4, 8, 10, 12]
+    n_values = [4,5,6,7, 8,9, 10,11,12]
     
     # Listas para armazenar os resultados
     seq_times = []
     par_times = []
     speedups = []
     efficiencies = []
+    num_processes_list = []
 
     # Para cada Tamanho da Lista, faça:
     for n in n_values:
@@ -28,6 +31,7 @@ def main():
         par_solver = ParallelNQueensSolver(n)
         par_solutions, par_time = par_solver.solve()
         par_times.append(par_time)  # Armazena o tempo paralelo
+        num_processes_list.append(par_solver.num_processes)  # Armazena o número de processos
         print(f"Paralelo: {len(par_solutions)} soluções encontradas em {par_time:.4f} segundos")
 
         # Calcula o speedup (ganho de desempenho da versão paralela)
@@ -38,20 +42,21 @@ def main():
         # Calcula a eficiência
         efficiency = speedup / par_solver.num_processes
         efficiencies.append(efficiency)
-        print(f"Eficiência: {efficiency:.2f}")
+        print(f"Eficiência: {efficiency:.2f}%")
+
 
     # Informações do sistema
     system_info = (f"CPU: {platform.processor()}\n"
                    f"Núcleos: {multiprocessing.cpu_count()}\n"
                    f"SO: {platform.system()} {platform.release()}\n"
                    f"Python: {platform.python_version()}\n"
-                   f"IDE: {os.getenv('IDE', 'Não especificado')}")
+                   f"IDE: {os.getenv('IDE', 'Visual Studio Code')}")
 
-    # Gera gráficos de Speedup e Eficiência
+    # Gera o primeiro conjunto de gráficos (Speedup e Eficiência)
     plt.figure(figsize=(12, 8))
 
     # Título principal com informações do sistema
-    plt.suptitle("Análise de Speedup e Eficiência\n" + system_info, fontsize=12)
+    plt.suptitle("" + system_info, fontsize=12)
 
     # Gráfico de Speedup
     plt.subplot(2, 1, 1)
@@ -63,6 +68,14 @@ def main():
     plt.grid(True)
     plt.legend()
 
+    # Adiciona anotações com o valor de speedup em vez do número de processos
+    for i, n in enumerate(n_values):
+        plt.annotate(f"{speedups[i]:.2f}x",  # Mostra o valor do speedup
+                    (n, speedups[i]), 
+                    textcoords="offset points", 
+                    xytext=(0, 10), 
+                    ha='center')
+
     # Gráfico de Eficiência
     plt.subplot(2, 1, 2)
     plt.plot(n_values, efficiencies, marker='o', label='Eficiência', color='green')
@@ -73,8 +86,25 @@ def main():
     plt.grid(True)
     plt.legend()
 
-    # Exibe os gráficos
+    # Exibe o primeiro conjunto de gráficos
     plt.tight_layout(rect=[0, 0, 1, 0.95])  # Ajusta o layout para incluir o título principal
+    plt.show()
+
+    # Após fechar o primeiro gráfico, gera o segundo conjunto de gráficos (Comparação de tempos)
+    plt.figure(figsize=(12, 6))
+
+    # Gráfico comparando os tempos sequencial e paralelo
+    plt.plot(n_values, seq_times, marker='o', label='Sequencial', color='red')
+    plt.plot(n_values, par_times, marker='o', label='Paralelo', color='blue')
+    plt.title('Comparação dos Tempos de Execução')
+    plt.xlabel('Tamanho do Tabuleiro (N)')
+    plt.ylabel('Tempo de Execução (segundos)')
+    plt.xticks(n_values)
+    plt.grid(True)
+    plt.legend()
+
+    # Exibe o segundo gráfico
+    plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
