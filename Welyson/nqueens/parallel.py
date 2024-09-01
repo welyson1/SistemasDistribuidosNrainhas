@@ -1,3 +1,5 @@
+# parallel.py
+
 import multiprocessing
 from typing import List, Tuple
 from nqueens.solver import NQueensSolver
