@@ -9,7 +9,7 @@ import numpy as np
 
 def main():
     # Lista de tamanhos de tabuleiro a serem testados
-    n_values = [4,5,6,7, 8,9, 10,11]
+    n_values = [4,5,6,7, 8,9, 10,11,12]
     
     # Listas para armazenar os resultados
     seq_times = []
