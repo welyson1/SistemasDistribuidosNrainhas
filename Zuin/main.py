@@ -2,7 +2,7 @@ from nqueens.sequential import SequentialNQueensSolver
 from nqueens.parallel import ParallelNQueensSolver
 
 def main():
-    n_values = [4, 8, 10, 12, 13]
+    n_values = [4, 5, 6, 7, 8, 9, 10, 11, 12]
 
     for n in n_values:
         print(f"\nResolvendo o problema das {n}-Rainhas:")
