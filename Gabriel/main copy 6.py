@@ -8,7 +8,7 @@ import numpy as np
 
 def main():
     # Lista de tamanhos de tabuleiro a serem testados
-    n_values = [4, 8, 10, 12]
+    n_values = [4, 6, 10, 12, 13]
     
     # Listas para armazenar os resultados
     seq_times = []
