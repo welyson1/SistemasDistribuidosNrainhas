@@ -1,4 +1,4 @@
-# Solucionador de N-Rainhas com Mapas de Calor e Logging
+# Mapas de Calor e Logging
 
 Este projeto implementa um solucionador para o problema das N-Rainhas usando métodos sequenciais e paralelos. Ele inclui funcionalidades para logging dos resultados e geração de mapas de calor para visualizar a distribuição das soluções.
 
@@ -7,10 +7,17 @@ Este projeto implementa um solucionador para o problema das N-Rainhas usando mé
 O mapa de calor que geramos para o problema das N-Rainhas é uma ferramenta visual poderosa que nos ajuda a entender os padrões nas soluções encontradas. Aqui está uma explicação passo a passo de como interpretar este mapa:
 
 ## O que é o mapa de calor?
+Os mapas de calor fornecem uma visualização da frequência com que cada posição do tabuleiro é ocupada por uma rainha nas soluções encontradas.
+
+- Cores mais escuras (vermelho) indicam posições mais frequentemente ocupadas.
+- Cores mais claras (amarelo/branco) indicam posições menos frequentemente ocupadas.
+- Os números em cada célula representam a proporção de soluções em que aquela posição é ocupada.
 
 1. **Representação do tabuleiro**: Cada quadrado no mapa de calor representa uma posição no tabuleiro de xadrez. As linhas representam as fileiras do tabuleiro, e as colunas representam as colunas do tabuleiro.
 
 2. **Cores e números**: As cores e os números em cada quadrado indicam a frequência com que uma rainha é colocada naquela posição específica, considerando todas as soluções encontradas.
+
+![Mapa de calor](https://raw.githubusercontent.com/welyson1/SistemasDistribuidosNrainhas/main/Welyson/solution_images/combined_heatmap.png)
 
 ## Como interpretar as cores e números
 
@@ -79,11 +86,3 @@ Após a execução, você encontrará:
 2. Mapas de calor no diretório `heatmaps/`:
    - Mapas individuais: `{N}_queens/{solver_type}_heatmap.png`
    - Mapa combinado: `combined_heatmap.png`
-
-## Interpretando os Mapas de Calor
-
-Os mapas de calor fornecem uma visualização da frequência com que cada posição do tabuleiro é ocupada por uma rainha nas soluções encontradas.
-
-- Cores mais escuras (vermelho) indicam posições mais frequentemente ocupadas.
-- Cores mais claras (amarelo/branco) indicam posições menos frequentemente ocupadas.
-- Os números em cada célula representam a proporção de soluções em que aquela posição é ocupada.
