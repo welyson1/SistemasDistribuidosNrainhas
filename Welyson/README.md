@@ -2,32 +2,40 @@
 
 Este projeto implementa um solucionador para o problema das N-Rainhas usando métodos sequenciais e paralelos. Ele inclui funcionalidades para logging dos resultados e geração de mapas de calor para visualizar a distribuição das soluções.
 
-# Interpretando o Mapa de Calor das N-Rainhas
+### Logging
+A classe `NQueensLogger` no arquivo `logger.py` gerencia o registro dos resultados dos solucionadores:
 
-O mapa de calor que geramos para o problema das N-Rainhas é uma ferramenta visual poderosa que nos ajuda a entender os padrões nas soluções encontradas. Aqui está uma explicação passo a passo de como interpretar este mapa:
+- Os logs são armazenados em formato JSON no diretório `./Welyson/logs`.
+- Cada entrada de log contém:
+  - Tamanho do tabuleiro (`n`)
+  - Tipo de solucionador (Sequencial ou Paralelo)
+  - Número de soluções encontradas
+  - Tempo de execução
+  - Todas as soluções encontradas
 
-## O que é o mapa de calor?
-Os mapas de calor fornecem uma visualização da frequência com que cada posição do tabuleiro é ocupada por uma rainha nas soluções encontradas.
+#### Estrutura do Log
+```json
+{
+  "n": 8,
+  "solver_type": "Sequencial",
+  "num_solutions": 92,
+  "time": 0.1234,
+  "solutions": [[...], [...], ...]
+}
+```
 
-- Cores mais escuras (vermelho) indicam posições mais frequentemente ocupadas.
-- Cores mais claras (amarelo/branco) indicam posições menos frequentemente ocupadas.
-- Os números em cada célula representam a proporção de soluções em que aquela posição é ocupada.
+### Geração de Heatmap
+A classe `NQueensHeatmapGenerator` no arquivo `image_generator.py` cria heatmaps para visualizar os padrões das soluções:
 
-1. **Representação do tabuleiro**: Cada quadrado no mapa de calor representa uma posição no tabuleiro de xadrez. As linhas representam as fileiras do tabuleiro, e as colunas representam as colunas do tabuleiro.
+- Heatmaps individuais para cada tamanho de tabuleiro e tipo de solucionador.
+- Um heatmap combinado mostrando todas as configurações.
+- Os heatmaps são salvos no diretório `./Welyson/heatmaps`.
 
-2. **Cores e números**: As cores e os números em cada quadrado indicam a frequência com que uma rainha é colocada naquela posição específica, considerando todas as soluções encontradas.
-
-![Mapa de calor](https://raw.githubusercontent.com/welyson1/SistemasDistribuidosNrainhas/main/Welyson/solution_images/combined_heatmap.png)
-
-## Como interpretar as cores e números
-
-3. **Escala de cores**: 
-   - Cores mais escuras (tendendo ao vermelho) indicam posições onde as rainhas são colocadas com mais frequência.
-   - Cores mais claras (tendendo ao amarelo ou branco) indicam posições onde as rainhas são colocadas com menos frequência.
-
-4. **Números nas células**: 
-   - Os números em cada célula representam a proporção de soluções em que uma rainha é colocada naquela posição.
-   - Por exemplo, um valor de 0.25 significa que em 25% das soluções, uma rainha foi colocada naquela posição.
+#### Interpretando o Heatmap
+- Cada célula no heatmap representa uma posição no tabuleiro de xadrez.
+- A intensidade da cor indica a frequência de colocação de uma rainha naquela posição em todas as soluções.
+- Cores mais escuras (vermelho) indicam colocação mais frequente, enquanto cores mais claras (amarelo) indicam colocação menos frequente.
+- Os números em cada célula representam a frequência normalizada (entre 0 e 1).
 
 ## Requisitos
 
@@ -51,19 +59,20 @@ pip install matplotlib seaborn numpy
 
 ## Como Usar
 
-1. Clone o repositório ou baixe os arquivos do projeto.
-
-2. Navegue até o diretório do projeto no terminal.
-
-3. Execute o script principal:
-
+1. Execute o script principal:
    ```
    python main.py
    ```
 
-   Por padrão, isso executará o solucionador para N = 4, 8, 10, 12 e 13, gerará logs e mapas de calor.
+2. O script resolverá o problema das N-Rainhas para tabuleiros de tamanhos 4, 6 e 8, utilizando os métodos sequencial e paralelo.
 
-4. Para desabilitar a geração de mapas de calor, modifique a última linha em `main.py`:
+3. Os resultados serão registrados e os heatmaps serão gerados automaticamente.
+
+4. Verifique o diretório `./Welyson/logs` para obter logs detalhados em formato JSON.
+
+5. Visualize os heatmaps gerados no diretório `./Welyson/heatmaps`.
+
+6. Para desabilitar a geração de mapas de calor, modifique a última linha em `main.py`:
 
    ```python
    main(generate_heatmaps=False)
@@ -86,3 +95,7 @@ Após a execução, você encontrará:
 2. Mapas de calor no diretório `heatmaps/`:
    - Mapas individuais: `{N}_queens/{solver_type}_heatmap.png`
    - Mapa combinado: `combined_heatmap.png`
+
+![Heatmap Combinado](./heatmaps/combined_heatmap.png)
+
+Esta imagem mostra heatmaps para diferentes tamanhos de tabuleiro e tipos de solucionador. Analise os padrões para entender as posições comuns das rainhas e como elas mudam com o tamanho do tabuleiro ou o método de solução.
