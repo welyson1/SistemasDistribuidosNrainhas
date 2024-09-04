@@ -59,7 +59,7 @@ def plot_overhead(n_values, seq_times, par_times):
     plt.close()
 
 def main():
-    n_values = [4, 5, 6, 7, 8, 9, 10, 11, 12]
+    n_values = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     seq_times = []
     par_times = []
     seq_cpu_usage = []
