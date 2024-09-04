@@ -3,7 +3,7 @@ from nqueens.parallel import ParallelNQueensSolver
 
 def main():
     # Lista de tamanhos de tabuleiro a serem testados
-    n_values = [4, 8, 10, 12]
+    n_values = [4, 8, 10]
 
     # Para cada Tamanho da Lista, faça:
     for n in n_values:

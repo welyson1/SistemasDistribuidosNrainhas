@@ -6,7 +6,7 @@ from nqueens.image_generator import NQueensHeatmapGenerator
 
 def main(generate_heatmaps=True):
     logger = NQueensLogger()
-    n_values = [4, 6, 8, 10, 12, 13] # Tamanhos do tabuleiro para resolver o problema das N-Rainhas [4, 6, 8, 10, 12, 13]
+    n_values = [4, 6, 8] # Tamanhos do tabuleiro para resolver o problema das N-Rainhas [4, 6, 8, 10, 12, 13]
 
     for n in n_values:
         print(f"\nResolvendo o problema das {n}-Rainhas:") 
