@@ -20,3 +20,4 @@ Reune as execuções Sequencial e Paralelo, chamando as outras duas funções
 
 ### Resultado
 ![Gráfico do Resultado](nqueens_resource_usage.png)
+![Gráfico Overhead](nqueens_overhead.png)
